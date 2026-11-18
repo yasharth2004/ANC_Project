@@ -110,3 +110,17 @@ def test_format_validation_uses_portaudio():
         catalog=catalog,
         backend=backend,
     )
+
+
+def test_sounddevice_input_output_pair_shape():
+    class InputOutputPair:
+        input = 0
+        output = 1
+
+    class PairBackend(MockAudioBackend):
+        default = SimpleNamespace(device=InputOutputPair())
+
+    catalog = discover_audio_devices(PairBackend())
+
+    assert catalog.default_input_id == 0
+    assert catalog.default_output_id == 1

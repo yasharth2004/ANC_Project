@@ -100,9 +100,17 @@ def _default_device_ids(backend: ModuleType) -> tuple[int | None, int | None]:
         if isinstance(default_devices, (list, tuple)):
             input_id = _integer(default_devices[0], -1)
             output_id = _integer(default_devices[1], -1)
+        elif hasattr(default_devices, "input") and hasattr(default_devices, "output"):
+            input_id = _integer(getattr(default_devices, "input"), -1)
+            output_id = _integer(getattr(default_devices, "output"), -1)
         else:
-            input_id = _integer(default_devices, -1)
-            output_id = None
+            try:
+                pair = tuple(default_devices)
+                input_id = _integer(pair[0], -1) if len(pair) > 0 else -1
+                output_id = _integer(pair[1], -1) if len(pair) > 1 else -1
+            except TypeError:
+                input_id = _integer(default_devices, -1)
+                output_id = None
     except Exception as exc:
         LOGGER.warning("Could not determine default audio devices: %s", exc)
         input_id = None
@@ -285,6 +293,7 @@ def format_device_table(catalog: DeviceCatalog) -> str:
         "IN",
         "OUT",
         "SAMPLE RATE",
+        "STATUS",
         "DEFAULT",
     )
     rows: list[tuple[str, ...]] = []
@@ -296,11 +305,9 @@ def format_device_table(catalog: DeviceCatalog) -> str:
         if device.device_id == catalog.default_output_id:
             defaults.append("OUT")
 
-        status = "!"
+        status = "AVAILABLE"
         if not device.usable:
             status = "UNAVAILABLE"
-        elif device.input_available or device.output_available:
-            status = "-"
 
         rows.append(
             (
@@ -310,6 +317,7 @@ def format_device_table(catalog: DeviceCatalog) -> str:
                 str(device.max_input_channels),
                 str(device.max_output_channels),
                 f"{device.default_sample_rate:.1f}",
+                status,
                 "/".join(defaults) if defaults else "-",
             )
         )
