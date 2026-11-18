@@ -23,10 +23,34 @@ dev = [
 
 [project.scripts]
 hybridanc = "prototype.python.main:main"
+hybridanc-safety = "prototype.python.audio_safety:main"
 hybridanc-devices = "prototype.python.audio_devices:main"
+hybridanc-capture = "prototype.python.audio_capture:main"
+hybridanc-playback = "prototype.python.audio_playback:main"
+hybridanc-passthrough = "prototype.python.audio_passthrough:main"
+hybridanc-latency = "prototype.python.latency_test:main"
+hybridanc-noise = "prototype.python.noise_analyzer:main"
+hybridanc-filters = "prototype.python.digital_filters:main"
+hybridanc-suppress = "prototype.python.noise_suppression:main"
+hybridanc-anc-lab = "prototype.python.anc_simulation:main"
+hybridanc-lms = "prototype.python.lms:main"
+hybridanc-nlms = "prototype.python.nlms:main"
+hybridanc-secondary-path = "prototype.python.secondary_path:main"
+hybridanc-fxlms = "prototype.python.fxlms:main"
+hybridanc-anc-dashboard = "prototype.python.anc_comparison_dashboard:main"
+hybridanc-physical-anc = "prototype.python.physical_anc_experiment:main"
+hybridanc-anc-evaluation = "prototype.python.anc_evaluation:main"
+hybridanc-engine = "prototype.python.backend_service:main"
+hybridanc-stability = "prototype.python.audio_stability_test:main"
 
 [tool.setuptools]
-packages = ["prototype", "prototype.python"]
+packages = [
+  "core",
+  "core.safety",
+  "prototype",
+  "prototype.python",
+  "prototype.python.dsp",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
